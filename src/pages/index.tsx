@@ -17,7 +17,7 @@ export const TodoList: React.FC = () => {
 
   return (
     <ul className={styles.todoList}>
-      {todos.map(todo => (
+      {todos.map((todo) => (
         <TodoItem todo={todo} />
       ))}
     </ul>
@@ -26,15 +26,8 @@ export const TodoList: React.FC = () => {
 
 const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => (
   <li className={styles.todo}>
-    <label
-      className={`${styles.label} ${todo.completed ? styles.checked : ""}`}
-    >
-      <input
-        type="checkbox"
-        checked={todo.completed}
-        className={`${styles.checkbox}`}
-        onChange={() => toggleTodo(todo)}
-      />
+    <label className={`${styles.label} ${todo.completed ? styles.checked : ""}`}>
+      <input type="checkbox" checked={todo.completed} className={`${styles.checkbox}`} onChange={() => toggleTodo(todo)} />
       {todo.text}
     </label>
 
@@ -49,19 +42,14 @@ const AddTodoInput = () => {
 
   return (
     <form
-      onSubmit={async e => {
+      onSubmit={async (e) => {
         e.preventDefault();
         createTodo(text);
         setText("");
       }}
       className={styles.addTodo}
     >
-      <input
-        className={styles.input}
-        placeholder="Buy some milk"
-        value={text}
-        onChange={e => setText(e.target.value)}
-      />
+      <input className={styles.input} placeholder="Buy some milk" value={text} onChange={(e) => setText(e.target.value)} />
       <button className={styles.addButton}>Add</button>
     </form>
   );
@@ -76,10 +64,9 @@ const Home: NextPage = () => {
       </Head>
 
       <header className={styles.header}>
-        <h1 className={styles.title}>Todos</h1>
+        <h1 className={styles.title}>My Todos</h1>
         <h2 className={styles.desc}>
-          NextJS app connected to Postgres using Prisma and hosted on{" "}
-          <a href="https://railway.app">Railway</a>
+          NextJS app connected to Postgres using Prisma and hosted on <a href="https://railway.app">Railway</a>
         </h2>
       </header>
 
