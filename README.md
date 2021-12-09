@@ -1,35 +1,39 @@
 ---
-title: NextJS Prisma
-description: A NextJS app using Prisma with a PostgreSQL database
+title: Active Sloth
+description: Personal organization app
 tags:
-  - next
-  - prisma
-  - postgresql
-  - typescript
+    - next
+    - prisma
+    - postgresql
+    - typescript
 ---
 
-# NextJS Prisma Example
+## How to setup local dev
+
+To point PG API to right url, use `DATABASE_URL` in .env.
+
+## Setup a NextJS Prisma Example
 
 This example is a [NextJS](https://nextjs.org/) todo app that uses
 [Prisma](https://www.prisma.io/) to store todos in Postgres.
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new?template=https%3A%2F%2Fgithub.com%2Frailwayapp%2Fexamples%2Ftree%2Fmaster%2Fexamples%2Fnextjs-prisma&plugins=postgresql)
 
-## ✨ Features
+### ✨ Features
 
-- Prisma
-- NextJS
-- Postgres
-- TypeScript
+-   Prisma
+-   NextJS
+-   Postgres
+-   TypeScript
 
-## 💁‍♀️ How to use
+### 💁‍♀️ How to use
 
-- [Provision a Postgres container on Railway](https://dev.new)
-- Connect to your Railway project with `railway link`
-- Migrate the database `railway run yarn migrate:dev`
-- Run the NextJS app `railway run yarn dev`
+-   [Provision a Postgres container on Railway](https://dev.new)
+-   Connect to your Railway project with `railway link`
+-   Migrate the database `railway run yarn migrate:dev`
+-   Run the NextJS app `railway run yarn dev`
 
-## 📝 Notes
+### 📝 Notes
 
 This app is a simple todo list where the data is persisted to Postgres. [Prisma
 migrations](https://www.prisma.io/docs/concepts/components/prisma-migrate#prisma-migrate)

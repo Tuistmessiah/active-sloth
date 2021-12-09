@@ -16,3 +16,22 @@ model Todo {
   text      String
   completed Boolean
 }
+
+model Project {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  title     String
+  // Relations
+  tasks     Task[]
+}
+
+model Task {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  text      String
+  completed Boolean
+  cost      Int
+  // Relations
+  Project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+}

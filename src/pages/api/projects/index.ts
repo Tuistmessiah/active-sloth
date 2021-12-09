@@ -8,35 +8,36 @@ const prisma = new PrismaClient({
       },
     },
   });
+  
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+    console.log("merda")
   if (req.method === "GET") {
-    // get all todos
-    const todos = await prisma.todo.findMany({
+    // get all projects
+    const projects = await prisma.project.findMany({
       orderBy: { createdAt: "desc" },
     });
-    res.json(todos);
+    res.json(projects);
   } else if (req.method === "POST") {
-    // create todo
-    const text = JSON.parse(req.body).text;
-    console.log({text});
-    const todo = await prisma.todo.create({
-      data: { text, completed: false },
+    // create project
+    const title = JSON.parse(req.body).title;
+    const project = await prisma.project.create({
+      data: { title },
     });
-    res.json(todo);
+    res.json(project);
   } else if (req.method === "PUT") {
-    // update todo
-    const id = req.query.todoId as string;
+    // update project
+    const id = req.query.projectId as string;
     const data = JSON.parse(req.body);
-    const todo = await prisma.todo.update({
+    const project = await prisma.project.update({
       where: { id },
       data,
     });
-    res.json(todo);
+    res.json(project);
   } else if (req.method === "DELETE") {
-    // delete todo
-    const id = req.query.todoId as string;
-    await prisma.todo.delete({ where: { id } });
+    // delete project
+    const id = req.query.projectId as string;
+    await prisma.project.delete({ where: { id } });
     res.json({ status: "ok" });
   }
 };

@@ -1,12 +1,13 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import { useMemo, useState } from "react";
-import { createTodo, deleteTodo, toggleTodo, useTodos } from "../api";
+import { createProject, createTodo, deleteTodo, toggleTodo, useProjects, useTodos } from "../services/api";
 import styles from "../styles/Home.module.css";
 import { Todo } from "../types";
 
 export const TodoList: React.FC = () => {
   const { data: todos, error } = useTodos();
+  const { data: projects, error: ProjError } = useProjects();
 
   if (error != null) return <div>Error loading todos...</div>;
   if (todos == null) return <div>Loading...</div>;
@@ -44,6 +45,7 @@ const AddTodoInput = () => {
     <form
       onSubmit={async (e) => {
         e.preventDefault();
+        // createProject("test");
         createTodo(text);
         setText("");
       }}

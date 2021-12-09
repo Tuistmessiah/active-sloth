@@ -4,3 +4,10 @@ export interface Todo {
   text: string;
   completed: boolean;
 }
+
+export interface Project {
+    id: string;
+    created: string;
+    title: string;
+  }
+  
