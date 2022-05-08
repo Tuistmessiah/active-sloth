@@ -1,26 +1,40 @@
 :root {
-  --primary: #c049ff;
+    --primary: #f9eeff;
+}
+
+@font-face {
+    font-family: Lato;
+    src: url('../assets/fonts/Lato-Light.ttf');
+    src: url('../assets/fonts/Lato-Regular.ttf');
+    src: url('../assets/fonts/Lato-Thin.ttf');
 }
 
 html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    font-family: Lato, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+#__next {
+    position: relative;
+    overflow: hidden;
 }
 
 a {
-  color: var(--primary);
-  text-decoration: none;
+    color: var(--primary);
+    text-decoration: none;
 }
 
 a:hover,
 a:focus,
 a:active {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: Lato;
+    font-style: normal;
 }

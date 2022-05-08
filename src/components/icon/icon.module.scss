@@ -1,0 +1,10 @@
+.icon {
+    height: inherit;
+    width: inherit;
+
+    pointer-events: none;
+    svg {
+        height: inherit !important;
+        width: inherit !important;
+    }
+}

@@ -1,0 +1,53 @@
+@import './variables.scss';
+
+/**
+  Returns property with pre defined dark/light color
+  @param $property name of scss property to define
+  @param $color name of color in dark/light theme (@global.scss)
+  @param $transparency (optional) transparency value 0 - 1
+*/
+@mixin applyColor($property, $color, $transparency: 1) {
+    :global(.dark) & {
+        #{$property}: rgba(map-get($dark, $color), $transparency);
+    }
+
+    :global(.light) & {
+        #{$property}: rgba(map-get($light, $color), $transparency);
+    }
+
+    #{$property}: rgba(map-get($light, $color), $transparency);
+}
+
+/**
+  Returns property with pre defined dark/light color. Allows custom attributes
+  @param $property name of scss property to define
+  @param $attributes extra property attributes
+  @param $color name of color in dark/light theme (@global.scss)
+  @param $transparency (optional) transparency value 0 - 1
+*/
+@mixin propertyApplyColor($property, $attributes, $color, $transparency: 1) {
+    :global(.dark) & {
+        #{$property}: $attributes rgba(map-get($dark, $color), $transparency);
+    }
+
+    :global(.light) & {
+        #{$property}: $attributes rgba(map-get($light, $color), $transparency);
+    }
+
+    #{$property}: $attributes rgba(map-get($light, $color), $transparency);
+}
+
+/**
+  Returns property with color and !important
+*/
+@mixin applyColorImportant($property, $color, $transparency: 1) {
+    :global(.dark) & {
+        #{$property}: rgba(map-get($dark, $color), $transparency) !important;
+    }
+
+    :global(.light) & {
+        #{$property}: rgba(map-get($light, $color), $transparency) !important;
+    }
+
+    #{$property}: rgba(map-get($light, $color), $transparency) !important;
+}

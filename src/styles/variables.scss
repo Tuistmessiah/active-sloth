@@ -1,0 +1,153 @@
+// * Scale
+
+// * Colors
+
+// > Greyscale
+$cg-black: rgba(0, 0, 0, 1);
+$cg-grey-0: rgba(20, 20, 20, 1);
+$cg-grey-1: rgba(40, 40, 40, 1);
+$cg-grey-2: rgba(80, 80, 80, 1);
+$cg-grey-3: rgba(120, 120, 120, 1);
+$cg-grey-4: rgba(160, 160, 160, 1);
+$cg-grey-5: rgba(200, 200, 200, 1);
+$cg-grey-6: rgba(230, 230, 230, 1);
+$cg-white: rgba(255, 255, 255, 1);
+
+// > Validation
+$cg-error-1: rgba(255, 177, 177, 0.9);
+$cg-error-2: rgba(226, 22, 22, 0.9);
+$cg-error-3: rgba(131, 12, 12, 0.9);
+
+// > Other (RGB/RGBA)
+
+// Alerts
+$cg-alert-error: rgba(244, 67, 54, 1);
+$cg-alert-success: rgba(76, 175, 80, 1);
+$cg-alert-info: rgba(33, 150, 243, 1);
+$cg-alert-warning: rgba(255, 152, 0, 1);
+
+// * Positioning
+
+// Leaflet map z-index: 400
+
+$z-index-normal: 100;
+
+$z-index-map-objects: 410;
+$z-index-map-overlays: 420;
+
+$z-index-mini-map: 500;
+$z-index-bottom-bar: 510;
+
+$z-index-main-bar: 520;
+$z-index-sidebar: 520;
+
+$z-index-modals: 550;
+
+$z-index-fullscreen: 600;
+$z-index-navbar: 610;
+
+$z-index-tooltips: 1000;
+
+// > Layout Sizes
+
+$general-borders: 1px;
+$general-padding: 1px;
+
+// > Color pallette
+
+// Light
+$light: (
+    'contrast-1': $cg-grey-0,
+    'contrast-2': $cg-grey-1,
+    'contrast-anti-1': $cg-white,
+    'contrast-anti-2': $cg-grey-6,
+    'primary-1': #ffce4b,
+    'primary-2': #ffce4b,
+    'primary-3': #ffce4b,
+    'secondary-1': #faf6ea,
+    'secondary-2': #918a76,
+    'secondary-3': #faf6ea,
+    'tertiary-1': #412f2c,
+    'tertiary-2': #47525e,
+    'tertiary-3': #5e4642,
+    'primary-anti-1': $cg-grey-0,
+    'primary-anti-2': $cg-grey-0,
+    'primary-anti-3': $cg-grey-0,
+    'secondary-anti-1': $cg-white,
+    'secondary-anti-2': $cg-white,
+    'secondary-anti-3': $cg-white,
+    'tertiary-anti-1': $cg-grey-6,
+    'tertiary-anti-2': $cg-grey-6,
+    'tertiary-anti-3': $cg-grey-6,
+    'shadow-1': rgba(56, 56, 56, 1),
+    'shadow-anti-1': rgba(230, 230, 230, 1),
+    'error-1': $cg-error-2,
+    'error-anti-1': $cg-error-3,
+);
+
+// Dark
+$dark: (
+    'contrast-1': $cg-grey-6,
+    'contrast-2': $cg-grey-3,
+    'contrast-anti-1': $cg-grey-0,
+    'contrast-anti-2': $cg-grey-6,
+    'primary-1': rgb(9, 67, 107),
+    'primary-2': rgb(18, 84, 128),
+    'primary-3': rgb(9, 67, 107),
+    'secondary-1': $cg-white,
+    'secondary-2': $cg-white,
+    'secondary-3': $cg-white,
+    'tertiary-1': rgb(252, 252, 252),
+    'tertiary-2': rgb(223, 223, 223),
+    'tertiary-3': rgb(252, 252, 252),
+    'primary-anti-1': $cg-white,
+    'primary-anti-2': $cg-white,
+    'primary-anti-3': $cg-white,
+    'secondary-anti-1': $cg-white,
+    'secondary-anti-2': $cg-white,
+    'secondary-anti-3': $cg-grey-6,
+    'tertiary-anti-1': $cg-grey-2,
+    'tertiary-anti-2': $cg-grey-2,
+    'tertiary-anti-3': $cg-grey-4,
+    'shadow-1': rgba(56, 56, 56, 1),
+    'shadow-anti-1': rgba(230, 230, 230, 1),
+    'error-1': $cg-error-2,
+    'error-anti-1': $cg-error-1,
+);
+
+:export {
+    light: {
+        // Default dashboard graph colors
+        fill: rgb(9, 67, 107);
+        transparent: rgba(9, 67, 107, 0.2);
+        backdrop: rgb(252, 252, 252);
+
+        // GeoJson highlight color
+        highlight: rgb(9, 67, 107);
+
+        // Tooltip background color
+        tooltip: rgb(18, 84, 128);
+
+        // Map Geo
+        point: map-get($light, 'primary-1');
+        line-path: map-get($light, 'tertiary-1');
+        line-moving: map-get($light, 'secondary-1');
+    }
+    dark: {
+        // Default dashboard graph colors
+        fill: rgb(223, 223, 223);
+        transparent: rgba(223, 223, 223, 0.2);
+        backdrop: rgb(9, 67, 107);
+
+        // GeoJson highlight color
+        highlight: rgb(252, 252, 252);
+
+        // Tooltip background color
+        tooltip: rgb(238, 238, 238);
+
+        // Map Geo
+        point: map-get($dark, 'primary-1');
+        line-path: map-get($dark, 'tertiary-1');
+        line-moving: map-get($dark, 'secondary-1');
+    }
+}

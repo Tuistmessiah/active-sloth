@@ -1,84 +1,86 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import { useMemo, useState } from "react";
-import { createProject, createTodo, deleteTodo, toggleTodo, useProjects, useTodos } from "../services/api";
-import styles from "../styles/Home.module.css";
-import { Todo } from "../types";
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { createTodo, deleteTodo, toggleTodo, useProjects, useTodos } from '../services/api';
+import { Todo } from '../types';
+import { ButtonSimple } from '../components/button-simple/button-simple';
 
-export const TodoList: React.FC = () => {
-  const { data: todos, error } = useTodos();
-  const { data: projects, error: ProjError } = useProjects();
+import s from './index.module.scss';
 
-  if (error != null) return <div>Error loading todos...</div>;
-  if (todos == null) return <div>Loading...</div>;
+export default function Home() {
+    const { data: todos, error } = useTodos();
+    const { data: projects, error: ProjError } = useProjects();
 
-  if (todos.length === 0) {
-    return <div className={styles.emptyState}>Try adding a todo ☝️️</div>;
-  }
+    // if (error != null) return <div>Error loading todos...</div>;
+    // if (todos == null) return <div>Loading...</div>;
 
-  return (
-    <ul className={styles.todoList}>
-      {todos.map((todo) => (
-        <TodoItem todo={todo} />
-      ))}
-    </ul>
-  );
-};
+    // if (todos.length === 0) {
+    //     return <div className={s.emptyState}>Try adding a todo ☝️️</div>;
+    // }
 
-const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => (
-  <li className={styles.todo}>
-    <label className={`${styles.label} ${todo.completed ? styles.checked : ""}`}>
-      <input type="checkbox" checked={todo.completed} className={`${styles.checkbox}`} onChange={() => toggleTodo(todo)} />
-      {todo.text}
-    </label>
+    return (
+        <div className={s.wrapper}>
+            <ButtonSimple adaptive content={'Login'} onClick={() => {}} />
+        </div>
+        // <ul className={styles.todoList}>
+        //   {todos.map((todo) => (
+        //     <TodoItem todo={todo} />
+        //   ))}
+        // </ul>
+    );
+}
 
-    <button className={styles.deleteButton} onClick={() => deleteTodo(todo.id)}>
-      ✕
-    </button>
-  </li>
-);
+// const TodoItem: React.FC<{ todo: Todo }> = ({ todo }) => (
+//   <li className={styles.todo}>
+//     <label className={`${styles.label} ${todo.completed ? styles.checked : ""}`}>
+//       <input type="checkbox" checked={todo.completed} className={`${styles.checkbox}`} onChange={() => toggleTodo(todo)} />
+//       {todo.text}
+//     </label>
 
-const AddTodoInput = () => {
-  const [text, setText] = useState("");
+//     <button className={styles.deleteButton} onClick={() => deleteTodo(todo.id)}>
+//       ✕
+//     </button>
+//   </li>
+// );
 
-  return (
-    <form
-      onSubmit={async (e) => {
-        e.preventDefault();
-        // createProject("test");
-        createTodo(text);
-        setText("");
-      }}
-      className={styles.addTodo}
-    >
-      <input className={styles.input} placeholder="Buy some milk" value={text} onChange={(e) => setText(e.target.value)} />
-      <button className={styles.addButton}>Add</button>
-    </form>
-  );
-};
+// const AddTodoInput = () => {
+//   const [text, setText] = useState("");
 
-const Home: NextPage = () => {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Railway NextJS Prisma</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+//   return (
+//     <form
+//       onSubmit={async (e) => {
+//         e.preventDefault();
+//         // createProject("test");
+//         createTodo(text);
+//         setText("");
+//       }}
+//       className={styles.addTodo}
+//     >
+//       <input className={styles.input} placeholder="Buy some milk" value={text} onChange={(e) => setText(e.target.value)} />
+//       <button className={styles.addButton}>Add</button>
+//     </form>
+//   );
+// };
 
-      <header className={styles.header}>
-        <h1 className={styles.title}>My Todos</h1>
-        <h2 className={styles.desc}>
-          NextJS app connected to Postgres using Prisma and hosted on <a href="https://railway.app">Railway</a>
-        </h2>
-      </header>
+// const Home: NextPage = () => {
+//   return (
+//     <div className={styles.container}>
+//       <Head>
+//         <title>Railway NextJS Prisma</title>
+//         <link rel="icon" href="/favicon.ico" />
+//       </Head>
 
-      <main className={styles.main}>
-        <AddTodoInput />
+//       <header className={styles.header}>
+//         <h1 className={styles.title}>My Todos</h1>
+//         <h2 className={styles.desc}>
+//           NextJS app connected to Postgres using Prisma and hosted on <a href="https://railway.app">Railway</a>
+//         </h2>
+//       </header>
 
-        <TodoList />
-      </main>
-    </div>
-  );
-};
+//       <main className={styles.main}>
+//         <AddTodoInput />
 
-export default Home;
+//         <TodoList />
+//       </main>
+//     </div>
+//   );
+// };

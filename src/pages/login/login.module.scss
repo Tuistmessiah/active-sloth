@@ -1,0 +1,124 @@
+@import '../../styles/functions.scss';
+@import '../../styles/breakpoints.scss';
+
+$form-height: 15rem;
+$form-width: 13rem;
+
+$circle-height: 7rem;
+$circle-width: 7rem;
+
+$container-padding: 1rem;
+
+.wrapper {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @include applyColor(background-color, 'primary-1', 1);
+}
+
+.container {
+    z-index: 2;
+    max-height: 90%;
+    max-width: 90%;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: $container-padding;
+    border-radius: 30px;
+
+    background-color: rgba(255, 255, 255, 0.5);
+
+    & > h1 {
+        margin: 1rem 0rem;
+        float: right;
+        text-align: right;
+
+        @include applyColor(color, 'tertiary-1', 1);
+    }
+
+    & > form {
+        flex-grow: 1;
+        height: $form-height;
+        width: $form-width;
+        max-height: 90%;
+        max-width: 100%;
+        margin: 1rem 0rem;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+
+            & > label {
+                margin-bottom: 0.1rem;
+            }
+
+            & > input {
+                height: 2rem;
+
+                padding: 0.1rem 1.6rem 0.1rem 0.5rem;
+                border: 1px solid;
+                border-radius: 5px;
+                border-width: 0.05rem;
+                @include applyColor(border-color, 'contrast-1', 0.4);
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+
+        & > button {
+            align-self: center;
+            height: 2.5rem;
+            width: 7rem;
+
+            @include applyColor(background-color, 'tertiary-2', 1);
+            @include applyColor(color, 'secondary-anti-1', 1);
+        }
+    }
+}
+
+.circle-1 {
+    position: absolute;
+    top: calc(100vh / 2 - (#{$form-height + 2} + #{$container-padding * 2}) / 2 - #{$circle-height}/ 2);
+    left: calc(100vw / 2 - #{$form-width + 4}/ 2 - #{$circle-width}/ 4);
+    @include breakpoint(tablet) {
+        top: calc(100vh / 2 - (#{$form-height + 2} + #{$container-padding * 2}) / 2 - #{$circle-height}/ 2);
+        left: calc(100vw / 2 - #{$form-width + 4}/ 2 - #{$circle-width}/ 2);
+    }
+
+    width: $circle-width;
+    height: $circle-height;
+
+    @include applyColor(background-color, 'tertiary-1', 1);
+
+    border-radius: 50%;
+}
+
+.circle-2 {
+    position: absolute;
+    top: calc(100vh / 2 + (#{$form-height + 2} + #{$container-padding * 2}) / 2 - #{$circle-height}/ 2);
+    left: calc(100vw / 2 + #{$form-width + 4}/ 2 - #{$circle-width}/ 1.5);
+    @include breakpoint(tablet) {
+        top: calc(100vh / 2 + (#{$form-height + 2} + #{$container-padding * 2}) / 2 - #{$circle-height}/ 2);
+        left: calc(100vw / 2 + #{$form-width + 4}/ 2 - #{$circle-width}/ 2);
+    }
+    z-index: 3;
+
+    width: $circle-width * 0.8;
+    height: $circle-height * 0.8;
+
+    @include applyColor(background-color, 'secondary-1', 1);
+
+    border-radius: 50%;
+}
