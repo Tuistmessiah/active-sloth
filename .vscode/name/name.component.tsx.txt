@@ -1,0 +1,11 @@
+
+import './THENAME.module.scss';
+
+export function THENAMEPage() {
+
+  return (
+    <div className="container">
+    
+    </div>
+  );
+}
