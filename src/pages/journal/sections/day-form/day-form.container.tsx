@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'src/components/ui/card';
 import { Input } from 'src/components/ui/input';
@@ -8,6 +8,7 @@ import style from './day-form.module.scss';
 import StyleUtils from 'src/utils/style.utils';
 const s = StyleUtils.styleMixer(style);
 
+/** Height in pixels (used for "entries" textarea) */
 const LINE_HEIGHT_PX = 19;
 
 const initialEntries = [
@@ -16,18 +17,8 @@ const initialEntries = [
 ];
 
 export function DayForm() {
-  const [text, setText] = useState('');
-  const textareaRef = useRef(null);
   const [entries, setEntries] = useState([...initialEntries, { text: '', tag: '' }]);
   const lastTextAreaRef = useRef(null);
-
-  /* Textarea input increases height with text line */
-  useEffect(() => {
-    if (textareaRef.current) {
-      (textareaRef.current as any).style.height = 'inherit';
-      (textareaRef.current as any).style.height = `${(textareaRef.current as any).scrollHeight}px`;
-    }
-  }, [text]);
 
   return (
     <div className={s('container')}>
@@ -50,9 +41,9 @@ export function DayForm() {
                       key={index}
                       ref={index === entries.length - 1 ? lastTextAreaRef : null}
                       value={entry.text}
-                      onFocus={(event) => handleFocus(index, event)}
+                      onFocus={(event) => handleTextFocus(index, event)}
                       onChange={(event) => handleTextChange(index, event)}
-                      onBlur={(event) => handleBlur(index, event)}
+                      onBlur={(event) => handleTextBlur(index, event)}
                       placeholder={index === entries.length - 1 ? 'Enter your entry...' : ''}
                       style={{ fontSize: `${LINE_HEIGHT_PX - 4}px`, lineHeight: `${LINE_HEIGHT_PX}px` }}
                     />
@@ -66,55 +57,41 @@ export function DayForm() {
     </div>
   );
 
-  function handleFocus(index: number, event: React.FocusEvent<HTMLTextAreaElement>) {
-    const textAreaEl = event.target;
-    let updatedText = textAreaEl.value;
-    let newEntries = [...entries];
-
-    updatedText = updatedText.replace(/[\s\n\t]+$/g, '');
-
-    newEntries[index].text = updatedText;
-    setEntries(newEntries);
-    textAreaEl.style.height = `${1}px`;
-
-    textAreaEl.style.height = `${textAreaEl.scrollHeight}px`;
+  function handleTextFocus(index: number, { target }: React.FocusEvent<HTMLTextAreaElement>) {
+    target.style.height = `${1}px`;
+    const updatedText = target.value.replace(/[\s\n\t]+$/g, '');
+    updateTargetEntry(target, index, updatedText, target.scrollHeight);
   }
 
-  function handleBlur(index: number, event: React.FocusEvent<HTMLTextAreaElement>) {
-    event.target.style.height = `${1}px`;
-    let updatedHeight = event.target.scrollHeight;
-    let updatedText = event.target.value;
-    let newEntries = [...entries];
+  function handleTextBlur(index: number, { target }: React.FocusEvent<HTMLTextAreaElement>) {
+    target.style.height = `${1}px`;
+    let updatedHeight = target.scrollHeight;
+    let updatedText = target.value;
 
+    // Adjust height to last line
     if (updatedText.endsWith('\n')) {
-      updatedText = updatedText.slice(0, -1);
-      updatedHeight = updatedHeight - LINE_HEIGHT_PX * 1 + 1;
+      const numberNewLines = (updatedText.match(/\n+$/) ?? [])[0]?.length ?? 0;
+      updatedHeight = updatedHeight - LINE_HEIGHT_PX * numberNewLines + 1;
     }
 
     updatedText = updatedText.replace(/[\s\n\t]+$/g, '');
-    newEntries[index].text = updatedText;
-    setEntries(newEntries);
-
-    event.target.style.height = `${updatedHeight}px`;
+    updateTargetEntry(target, index, updatedText, updatedHeight);
   }
 
-  function handleTextChange(index: number, event: ChangeEvent<HTMLTextAreaElement>) {
-    let updatedText = event.target.value;
-    let updatedHeight = event.target.scrollHeight;
-    let newEntries = [...entries];
-
-    // Double 'enter' - exit
-    if (updatedText.endsWith('\n\n') && event.target.selectionStart === updatedText.length) {
-      event.target.style.height = `${1}px`;
-      updatedHeight = event.target.scrollHeight;
-
-      updatedText = updatedText.replace(/[\s\n\t]+$/g, '');
-      updatedHeight = updatedHeight - LINE_HEIGHT_PX * 2 + 1;
-      event.target.blur();
+  function handleTextChange(index: number, { target }: ChangeEvent<HTMLTextAreaElement>) {
+    // Press 'Double Enter'
+    if (target.value.endsWith('\n\n') && target.selectionStart === target.value.length) {
+      target.blur(); // Triggers "handleTextBlur"
+      return;
     }
 
-    newEntries[index].text = updatedText;
+    updateTargetEntry(target, index, target.value, target.scrollHeight);
+  }
+
+  function updateTargetEntry(target: EventTarget & HTMLTextAreaElement, index: number, text: string, heightPx: number) {
+    let newEntries = [...entries];
+    newEntries[index].text = text;
     setEntries(newEntries);
-    event.target.style.height = `${updatedHeight}px`;
+    target.style.height = `${heightPx}px`;
   }
 }
