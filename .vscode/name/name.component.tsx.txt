@@ -1,10 +1,14 @@
 
+import { useEffect, useRef, useState } from 'react';
+
 import './THENAME.module.scss';
+import StyleUtils from 'src/utils/style.utils';
+const s = StyleUtils.styleMixer(style);
 
 export function THENAMEPage() {
 
   return (
-    <div className="container">
+    <div className={s('container')}>
     
     </div>
   );

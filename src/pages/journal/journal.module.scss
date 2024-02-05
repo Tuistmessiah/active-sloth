@@ -1,3 +1,15 @@
 .container {
-    
+  display: flex;
+  height: 100svh;
+
+  background-color: black;
+
+  .side-content {
+    flex-basis: 30%;
+    margin: 1rem;
+  }
+
+  .main-content {
+    background-color: red;
+  }
 }
