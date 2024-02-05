@@ -35,7 +35,6 @@ export function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isLoggedIn = useSelector((state: any) => {
-    console.log({ state });
     return state.user.isLoggedIn;
   });
 
@@ -48,7 +47,8 @@ export function LoginPage() {
   const formLogin = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      email: 'pedro@gmail.com',
+      password: '12345678',
     },
   });
 
@@ -60,14 +60,12 @@ export function LoginPage() {
   });
 
   async function onSubmitLogin(values: z.infer<typeof formSchema>) {
-    console.log(values);
     const res = await UsersService.postApiV1UserLogin({ ...values, name: 'new Pedro' });
     dispatch(login());
     localStorage.setItem('token', res.token);
   }
 
   async function onSubmitSignup(values: z.infer<typeof formSchema>) {
-    console.log(values);
     const res = await UsersService.postApiV1UserSignup({ ...values, name: 'new Pedro' });
     localStorage.setItem('token', res.token);
   }

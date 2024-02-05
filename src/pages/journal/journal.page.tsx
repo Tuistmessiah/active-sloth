@@ -1,4 +1,4 @@
-import { CardWithForm } from './sections/day-form/day-form.container';
+import { DayForm } from './sections/day-form/day-form.container';
 
 import StyleUtils from 'src/utils/style.utils';
 import style from './journal.module.scss';
@@ -8,7 +8,7 @@ export function JournalPage() {
   return (
     <div className={s('container')}>
       <div className={s('side-content')}>
-        <CardWithForm />
+        <DayForm />
       </div>
       <div className={s('main-content')}></div>
     </div>

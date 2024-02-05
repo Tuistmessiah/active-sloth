@@ -6,4 +6,23 @@
     width: 100%;
     height: 100%;
   }
+
+  // TODO: Add VSCode colors to SCSS .class, #id, tag
+  .entries {
+    .entry {
+      padding: 3px;
+      border: 1px rgba(0, 0, 0, 0.1) solid;
+      border-radius: calc(var(--radius) - 2px);
+      margin-bottom: 1rem;
+
+      textarea {
+        height: inherit;
+        min-height: 1px;
+
+        padding: 0;
+        border: none;
+        overflow: 'hidden';
+      }
+    }
+  }
 }
