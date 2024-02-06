@@ -2,8 +2,8 @@ import { Provider, useSelector } from 'react-redux';
 import { store } from './data/redux/store';
 
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { JournalPage } from './pages/journal/journal.page';
-import { LoginPage } from './pages/login/login.page';
+import JournalPage from './pages/journal/journal.page';
+import LoginPage from './pages/login/login.page';
 
 import style from './app.module.scss';
 import StyleUtils from './utils/style.utils';
@@ -25,7 +25,7 @@ function App() {
             <Link to="/contact">Contact</Link>
           </nav>
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<LoginPage />} />
             <Route
               path="/journal"
               element={

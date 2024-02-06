@@ -31,12 +31,10 @@ const formSchemaSignup = z.object({
   passwordConfirm: z.string(),
 });
 
-export function LoginPage() {
+export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = useSelector((state: any) => {
-    return state.user.isLoggedIn;
-  });
+  const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
 
   useEffect(() => {
     if (isLoggedIn) {
