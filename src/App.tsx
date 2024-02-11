@@ -7,11 +7,12 @@ import LoginPage from './pages/login/login.page';
 
 import style from './app.module.scss';
 import StyleUtils from './utils/style.utils';
+import TestPage from './pages/test/test.page';
 const s = StyleUtils.styleMixer(style);
 
 const ProtectedRoute = ({ children }: any) => {
   const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
-  return isLoggedIn ? children : <Navigate to="/login" />;
+  return isLoggedIn ? children : <Navigate to="/" />;
 };
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
             <Link to="/contact">Contact</Link>
           </nav>
           <Routes>
-            <Route path="/" element={<LoginPage />} />
+            <Route path="/test" element={<TestPage />} />
             <Route
               path="/journal"
               element={
@@ -50,6 +51,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/" element={<LoginPage />} />
           </Routes>
         </BrowserRouter>
       </div>

@@ -13,3 +13,9 @@ Workflow (Postman Collection - Api Client):
 ## Libraries
 
 Using Redux Toolkit.
+
+## Style
+
+Icons from:
+
+- https://fontawesome.com/search?q=null&o=r&m=free

@@ -16,6 +16,10 @@ export default function THENAME() {
   const myStoreState = useSelector((state: any) => state);
   const myState = useState({});
 
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <div className={s('container')}>
     

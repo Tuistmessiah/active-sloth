@@ -4,7 +4,7 @@ import userReducer from './reducers/user.reducer';
 
 export const reducers = combineReducers({
   user: userReducer,
-  session: journalReducer,
+  journal: journalReducer,
 });
 
 export type AppState = ReturnType<typeof reducers>;
@@ -12,3 +12,4 @@ export type AppState = ReturnType<typeof reducers>;
 export const store = configureStore({
   reducer: reducers,
 });
+export const dispatch = store.dispatch;

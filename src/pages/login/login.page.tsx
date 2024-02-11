@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { login } from 'src/data/redux/reducers/user.reducer';
-import { UsersService } from 'src/data/api-client';
+import { UsersService } from 'src/data/api-client/services/UsersService';
 
 import { Button } from 'src/components/ui/button';
 import { Input } from 'src/components/ui/input';

@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import { GetDaysInCurrentMonth, GetDaysInCurrentMonthRES } from 'src/data/interfaces/api.interface';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
@@ -11,8 +12,8 @@ export class DaysService {
    * @returns any Successful response
    * @throws ApiError
    */
-  public static getApiV1DayCurrentMonth(): CancelablePromise<any> {
-    return __request(OpenAPI, {
+  public static getApiV1DayCurrentMonth() {
+    return __request<GetDaysInCurrentMonthRES>(OpenAPI, {
       method: 'GET',
       url: '/api/v1/day/currentMonth',
       headers: {
@@ -50,6 +51,10 @@ export class DaysService {
       url: '/api/v1/day',
       body: requestBody,
       mediaType: 'application/json',
+      headers: {
+        Authorization:
+          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YzA4ZGJiNGUyNWQyYWE0ZDhhOGIzMSIsImlhdCI6MTcwNzE5MjY5MywiZXhwIjoxNzA5Nzg0NjkzfQ.OSujah5IEgW_UUpCVEZ323-6XnkQAb5KeC4Ss_83LOw',
+      },
     });
   }
   /**

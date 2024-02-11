@@ -1,0 +1,57 @@
+.container {
+  width: 100svw;
+  height: 100svh;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  position: relative;
+}
+
+.button {
+  position: absolute;
+  z-index: 999;
+  width: 320px;
+  height: 65px;
+  background: black;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding: 0 24px;
+  overflow: hidden;
+  transition: width 300ms linear;
+
+  &:before,
+  &:after {
+    // Your before and after styles
+  }
+
+  &.open {
+    width: 70px;
+
+    &:before {
+      transform: rotate(90deg);
+    }
+
+    &:after {
+      transform: rotate(0deg);
+    }
+  }
+}
+
+.nav {
+  transition: all 0.5s ease-in-out;
+  transform: translateX(10%);
+  padding: 10px;
+  opacity: 0;
+  display: none;
+
+  &.show {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  // Your nav styles
+}
