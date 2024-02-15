@@ -13,6 +13,12 @@ html {
   font-size: 80%;
 }
 
+textarea:focus-visible:read-only {
+  outline: none !important;
+}
+
+/* From Shadcn */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

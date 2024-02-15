@@ -5,10 +5,30 @@
   .card {
     width: 100%;
     height: 100%;
+
+    .save-icon {
+      position: absolute;
+      right: 2rem;
+      top: 2rem;
+
+      height: 1.5rem;
+      width: 1.5rem;
+
+      &.fill {
+        & > svg {
+          fill: black;
+        }
+      }
+
+      & > svg {
+        height: inherit;
+        width: inherit;
+      }
+    }
   }
 
   // TODO: Add VSCode colors to SCSS .class, #id, tag
-  button {
+  .submit {
     position: absolute;
     bottom: 5rem;
     left: 2rem;

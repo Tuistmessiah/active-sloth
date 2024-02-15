@@ -6,6 +6,7 @@ import { GetDaysInCurrentMonth, GetDaysInCurrentMonthRES } from 'src/data/interf
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+// TODO: Remove ALL
 export class DaysService {
   /**
    * Current Month

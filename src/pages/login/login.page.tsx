@@ -14,7 +14,9 @@ import { Card, CardContent, CardFooter, CardHeader } from 'src/components/ui/car
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'src/components/ui/form';
 
+import StyleUtils from 'src/utils/style.utils';
 import style from './login.module.scss';
+const _s = StyleUtils.styleMixer(style);
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -69,105 +71,107 @@ export default function LoginPage() {
   }
 
   return (
-    <Tabs defaultValue="account" className="w-[400px]">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="account">Login</TabsTrigger>
-        <TabsTrigger value="password">Signup</TabsTrigger>
-      </TabsList>
-      <TabsContent value="account">
-        <Card>
-          <CardHeader></CardHeader>
-          <Form {...formLogin}>
-            <form onSubmit={formLogin.handleSubmit(onSubmitLogin)} className="space-y-8">
-              <CardContent className="space-y-1">
-                <FormField
-                  control={formLogin.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={formLogin.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-              <CardFooter>
-                <Button type="submit">Login</Button>
-              </CardFooter>
-            </form>
-          </Form>
-        </Card>
-      </TabsContent>
-      <TabsContent value="password">
-        <Card>
-          <CardHeader></CardHeader>
+    <div className={'flex justify-center items-center h-screen'}>
+      <Tabs defaultValue="account" className="w-[400px]">
+        <TabsList className="grid w-full grid-cols-2">
+          {/* <TabsTrigger value="account">Login</TabsTrigger> */}
+          {/* <TabsTrigger value="password">Signup</TabsTrigger> */}
+        </TabsList>
+        <TabsContent value="account">
+          <Card>
+            <CardHeader></CardHeader>
+            <Form {...formLogin}>
+              <form onSubmit={formLogin.handleSubmit(onSubmitLogin)} className="space-y-8">
+                <CardContent className="space-y-1">
+                  <FormField
+                    control={formLogin.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={formLogin.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <CardFooter>
+                  <Button type="submit">Login</Button>
+                </CardFooter>
+              </form>
+            </Form>
+          </Card>
+        </TabsContent>
+        <TabsContent value="password">
+          <Card>
+            <CardHeader></CardHeader>
 
-          <Form {...formSignup}>
-            <form onSubmit={formSignup.handleSubmit(onSubmitSignup)} className="space-y-8">
-              <CardContent className="space-y-1">
-                <FormField
-                  control={formSignup.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input placeholder="" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={formSignup.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={formSignup.control}
-                  name="passwordConfirm"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </CardContent>
-              <CardFooter>
-                <Button type="submit">Signup</Button>
-              </CardFooter>
-            </form>
-          </Form>
-        </Card>
-      </TabsContent>
-    </Tabs>
+            <Form {...formSignup}>
+              <form onSubmit={formSignup.handleSubmit(onSubmitSignup)} className="space-y-8">
+                <CardContent className="space-y-1">
+                  <FormField
+                    control={formSignup.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={formSignup.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={formSignup.control}
+                    name="passwordConfirm"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <CardFooter>
+                  <Button type="submit">Signup</Button>
+                </CardFooter>
+              </form>
+            </Form>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

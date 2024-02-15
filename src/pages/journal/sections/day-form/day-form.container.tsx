@@ -1,45 +1,54 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { startOfDay } from 'date-fns';
 
 import { Day, Entry } from 'src/data/interfaces/models.interface';
-import { Tag } from 'src/data/interfaces/api.interface';
 
-import { AppState } from 'src/data/redux/store';
-import { LINE_HEIGHT_PX, getTagDetails, tags } from './day-form.utils';
-import { DaysService } from 'src/data/api-client/services/DaysService';
+import { DaysApi } from 'src/data/api/days.api';
+import { AppState, dispatch } from 'src/data/redux/store';
+import { selectDay, setDay } from 'src/data/redux/reducers/journal.reducer';
+import { formatDate, relativeTimeDifference } from 'src/utils/misc.utils';
+
+import { useDebounce } from 'src/hooks/use-debounce.hook';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
-import { TooltipProvider } from 'src/components/ui/tooltip';
 import EntryInput from './entry-input/entry-input.component';
 import { Input } from 'src/components/ui/input';
+
+import { ReactComponent as CircleCheck } from 'src/assets/svgs/circle-check-svgrepo.svg';
+import { ReactComponent as Circle } from 'src/assets/svgs/circle-svgrepo.svg';
 
 import style from './day-form.module.scss';
 import StyleUtils from 'src/utils/style.utils';
 const s = StyleUtils.styleMixer(style);
 
 const emptyDay: Day = {
-  date: new Date(),
+  id: '',
+  date: new Date().toISOString(),
   title: '',
   entries: [{ text: '', tag: undefined }],
 };
 
 export default function DayForm() {
+  const timeOut2Sec = useDebounce(2000, 'run-last');
+
   const currentMonth = useSelector((state: AppState) => state.journal.currentMonth);
+  const selectedDay = useSelector((state: AppState) => state.journal.selectedDay);
+
   const [dayForm, setDayForm] = useState<Day>(emptyDay);
+  const [saved, setSaved] = useState(true);
+
+  const lastEdit = useRef<number>(0);
 
   useEffect(() => {
-    if (currentMonth[0]) {
-      const date = startOfDay(currentMonth[0].date);
-      const today = startOfDay(new Date());
-      if (today === date) setDayForm(currentMonth[0]);
-      else setDayForm(emptyDay);
-    } else {
-      setDayForm(emptyDay);
-    }
-  }, []);
+    console.log({ selectedDay });
+    const formDate = selectedDay.date ?? emptyDay.date;
+    const formData = selectedDay.data ?? emptyDay;
+
+    setDayForm({ ...formData, date: formDate });
+  }, [selectedDay]);
 
   useEffect(() => {
+    // Add empty entry at the end
     if (dayForm.entries[dayForm.entries.length - 1].text) {
       let newEntries = [...dayForm.entries];
       newEntries.push({ text: '', tag: undefined });
@@ -49,101 +58,79 @@ export default function DayForm() {
 
   return (
     <div className={s('container')}>
-      <TooltipProvider>
-        <Card className={s('card')}>
-          <CardHeader>
-            <CardTitle>Today</CardTitle>
-            <CardDescription>Write your journal here...</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form>
-              <div className="grid w-full items-center gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Input id="title" placeholder="Title" />
-                </div>
-
-                <div className={s('entries')}>
-                  {dayForm?.entries.map((entry, index) => {
-                    const { Icon: SelectedTagIcon, color: tagColor, displayName } = getTagDetails(entry.tag);
-                    return (
-                      <EntryInput
-                        tagColor={tagColor}
-                        SelectedTagIcon={SelectedTagIcon}
-                        displayName={displayName}
-                        handleTagChange={(tag: Tag) => handleTagChange(tag, index)}
-                        entry={entry}
-                        handleTextFocus={(event: React.FocusEvent<HTMLTextAreaElement, Element>) => handleTextFocus(index, event)}
-                        handleTextChange={(event: ChangeEvent<HTMLTextAreaElement>) => handleTextChange(index, event)}
-                        handleTextBlur={(event: React.FocusEvent<HTMLTextAreaElement, Element>) => handleTextBlur(index, event)}
-                      />
-                    );
-                  })}
-                </div>
+      <Card className={s('card')}>
+        <CardHeader>
+          <CardTitle>{formatDate(selectedDay.date)}</CardTitle>
+          <CardDescription>{relativeTimeDifference(selectedDay.date, new Date().toISOString())}</CardDescription>
+          <div className={s('save-icon', { fill: !saved })}>{saved ? <CircleCheck /> : <Circle />}</div>
+        </CardHeader>
+        <CardContent>
+          <form>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Input id="title" placeholder="Title" />
               </div>
-            </form>
-          </CardContent>
-        </Card>
-      </TooltipProvider>
-      <button
-        onClick={async () => {
-          // TODO: Send Create
-          console.log({ dayForm });
-          const newEntries = dayForm.entries;
-          newEntries.pop();
-          const sendDayForm = { ...dayForm, entries: newEntries };
 
-          // TODO: Remove last empty entry
-          await DaysService.postApiV1Day(sendDayForm);
-          // TODO: Send Update
-        }}
-      >
-        Create
+              <div className={s('entries')}>
+                {dayForm?.entries.map((entry, index) => {
+                  return (
+                    <EntryInput
+                      entry={entry}
+                      update={(entry: Entry) => updateEntry(entry, index)}
+                      onChange={() => {
+                        lastEdit.current = Date.now();
+                      }}
+                      onBlur={() => ifIdleSave()}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+      <button className={s('submit')} onClick={() => saveChanges()}>
+        Save
       </button>
     </div>
   );
 
-  function handleTagChange(tag: Tag | undefined, index: number) {
-    updateEntry({ ...dayForm.entries[index], tag }, index);
+  function ifIdleSave() {
+    timeOut2Sec(() => {
+      const timeSinceLastEdit = Date.now() - lastEdit.current;
+      if (timeSinceLastEdit >= 2000) saveChanges();
+    });
   }
 
-  function handleTextFocus(index: number, { target }: React.FocusEvent<HTMLTextAreaElement>) {
-    target.style.height = `${1}px`;
-    const updatedText = target.value.replace(/[\s\n\t]+$/g, '');
-    updateTargetEntry(target, index, updatedText, target.scrollHeight);
-  }
+  async function saveChanges() {
+    const isUpdate = !!selectedDay.data;
+    console.log('auto save');
 
-  function handleTextBlur(index: number, { target }: React.FocusEvent<HTMLTextAreaElement>) {
-    target.style.height = `${1}px`;
-    let updatedHeight = target.scrollHeight;
-    let updatedText = target.value;
+    const trimmedForm = { ...dayForm, entries: dayForm.entries.filter((entry) => entry.text !== '') };
+    console.log({
+      dayForm,
+      trimmedForm,
+    });
 
-    // Adjust height to last line
-    if (updatedText.endsWith('\n')) {
-      const numberNewLines = (updatedText.match(/\n+$/) ?? [])[0]?.length ?? 0;
-      updatedHeight = updatedHeight - LINE_HEIGHT_PX * numberNewLines + 1;
+    if (isUpdate) {
+      const res = await DaysApi.patchDay(trimmedForm.id, trimmedForm);
+      const updatedDay = { ...res.data };
+      dispatch(setDay({ id: res.data.id, day: updatedDay }));
+    } else {
+      console.log({ trimmedForm });
+      const res = await DaysApi.postDay(trimmedForm);
+      const newDay = { ...res.data };
+      dispatch(setDay({ id: res.data.id, day: newDay }));
+      dispatch(selectDay({ date: selectedDay.date, data: newDay }));
     }
 
-    updatedText = updatedText.replace(/[\s\n\t]+$/g, '');
-    updateTargetEntry(target, index, updatedText, updatedHeight);
-  }
-
-  function handleTextChange(index: number, { target }: ChangeEvent<HTMLTextAreaElement>) {
-    // Press 'Double Enter'
-    if (target.value.endsWith('\n\n') && target.selectionStart === target.value.length) {
-      target.blur(); // Triggers "handleTextBlur"
-      return;
-    }
-    updateTargetEntry(target, index, target.value, target.scrollHeight);
+    setSaved(true);
   }
 
   function updateEntry(entry: Entry, index: number) {
     let newEntries = [...dayForm.entries];
     newEntries[index] = entry;
     setDayForm((prevDayForm) => ({ ...prevDayForm, entries: newEntries }));
-  }
-
-  function updateTargetEntry(target: EventTarget & HTMLTextAreaElement, index: number, text: string, heightPx: number) {
-    updateEntry({ ...dayForm.entries[index], text }, index);
-    target.style.height = `${heightPx}px`;
+    if (saved) setSaved(false);
   }
 }

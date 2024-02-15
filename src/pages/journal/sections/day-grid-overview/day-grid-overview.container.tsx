@@ -1,28 +1,35 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isSameDay, startOfDay } from 'date-fns';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 
-import { AppState, dispatch } from 'src/data/redux/store';
-import { setCurrentMonth } from 'src/data/redux/reducers/journaling.reducer';
-import { DaysService } from 'src/data/api-client/services/DaysService';
+import { Day } from 'src/data/interfaces/models.interface';
+
+import { DaysApi } from 'src/data/api/days.api';
+import { AppState } from 'src/data/redux/store';
+import { selectDay, setCurrentMonth } from 'src/data/redux/reducers/journal.reducer';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'src/components/ui/card';
 
 import style from './day-grid-overview.module.scss';
 import StyleUtils from 'src/utils/style.utils';
-import { Day } from 'src/data/interfaces/models.interface';
+import { getTagDetails } from '../day-form/day-form.utils';
+import EntryInput from '../day-form/entry-input/entry-input.component';
 const s = StyleUtils.styleMixer(style);
 
 export default function DayGridOverview() {
+  const dispatch = useDispatch();
   const currentMonth = useSelector((state: AppState) => state.journal.currentMonth);
+  const selectedDay = useSelector((state: AppState) => state.journal.selectedDay);
 
   useEffect(() => {
-    DaysService.getApiV1DayCurrentMonth().then((res) => {
+    DaysApi.getDayCurrentMonth().then((res) => {
       dispatch(setCurrentMonth(sortDays(res.data)));
-      console.log(res.data);
     });
   }, []);
 
   const filledDays = fillDays(currentMonth);
+  const today = startOfDay(new Date()).toISOString();
 
   return (
     <div className={s('container')}>
@@ -32,27 +39,41 @@ export default function DayGridOverview() {
           <CardDescription>Write your journal here...</CardDescription>
         </CardHeader>
 
-        <CardContent className={s('overview-wrapper')}>
-          <div className={s('overview-main')}>
-            {filledDays.map((day, i) => {
-              const date = new Date(day.date);
-              return (
-                <div key={i} className={s('day-card', { empty: !day.data })}>
-                  <div className={s('day-date')}>{date.toDateString()}</div>
-                  {/* Existing day */}
-                  {day.data &&
-                    day.data?.entries.map((entry, ii) => (
-                      <div key={ii} className={s('entry')}>
-                        <span className={'tag'}>{entry.tag}:</span> {entry.text}
-                      </div>
-                    ))}
-                  {/* Empty day */}
-                  {!day.data && <></>}
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
+        <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+          <CardContent className={s('overview-wrapper')}>
+            <Masonry>
+              {filledDays.map((day, i) => {
+                const date = new Date(day.date);
+
+                return (
+                  <div
+                    onClick={() => dispatch(selectDay({ date: day.date }))}
+                    key={i}
+                    className={s('cell', { empty: !day.data, selected: isSameDay(date, new Date(selectedDay?.date)), today: isSameDay(date, new Date()) })}
+                  >
+                    <div className={s('day-card')}>
+                      <div className={s('day-date')}>{date.getDate()}</div>
+                      {/* Existing day */}
+                      {day.data &&
+                        day.data?.entries.map((entry, ii) => {
+                          const { Icon: SelectedTagIcon, color: tagColor, displayName } = getTagDetails(entry.tag);
+
+                          return (
+                            <div key={ii} className={s('entry')}>
+                              {/* <p className={'tag'}>{entry.tag}:</p> {entry.text} */}
+                              <EntryInput entry={entry} displayOptions={{ displayOnly: true }} />
+                            </div>
+                          );
+                        })}
+                      {/* Empty day */}
+                      {!day.data && <></>}
+                    </div>
+                  </div>
+                );
+              })}
+            </Masonry>
+          </CardContent>
+        </ResponsiveMasonry>
       </Card>
     </div>
   );
@@ -63,12 +84,12 @@ function sortDays(days: Day[]): Day[] {
 }
 
 interface DisplayDay {
-  date: Date;
+  date: string;
   data?: Omit<Day, 'date'>;
 }
 
 function fillDays(days: Day[]): DisplayDay[] {
-  const today = new Date('2024-02-20T23:00:00.000Z'); // Dev: Change this to effectively today
+  const today = new Date();
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0, 0);
 
   const result: DisplayDay[] = [];
@@ -88,17 +109,16 @@ function fillDays(days: Day[]): DisplayDay[] {
 
   for (let i = 0, dp = dayPointer; dp >= startOfMonth && i < maxIterations; dp.setDate(dp.getDate() - 1), i++) {
     const dayKey = new Date(dp.getFullYear(), dp.getMonth(), dp.getDate()).getTime();
-
     if (daysMap.has(dayKey)) {
       const dayData = daysMap.get(dayKey);
       if (dayData) {
         const { date, ...data } = dayData;
-        result.push({ date: new Date(date), data });
+        result.push({ date: new Date(date).toISOString(), data });
       }
     } else {
-      result.push({ date: new Date(dp) });
+      result.push({ date: new Date(dp).toISOString() });
     }
   }
 
-  return result.reverse();
+  return result;
 }

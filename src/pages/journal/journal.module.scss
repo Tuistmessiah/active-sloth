@@ -1,14 +1,14 @@
 .container {
   position: relative;
   display: flex;
-  height: 100svh;
+  height: 100%;
 
   background-color: black;
 
   .side-content {
     position: relative;
-    width: 30svw;
-    min-width: 28rem;
+    width: 49svw;
+    min-width: 32rem;
     max-width: 40rem;
     padding: 1rem;
   }

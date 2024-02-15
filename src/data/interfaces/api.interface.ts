@@ -5,6 +5,12 @@
 export type GetDaysInCurrentMonth = ApiFunction<DayDTO[]>;
 export type GetDaysInCurrentMonthRES = SuccessResponse<DayDTO[]>;
 
+export type UpdateDay = ApiFunction<DayDTO>;
+export type UpdateDayRES = SuccessResponse<DayDTO>;
+
+export type CreateDay = ApiFunction<DayDTO>;
+export type CreateDayRES = SuccessResponse<DayDTO>;
+
 /**
  * * Data Transfer Objects
  */
@@ -13,11 +19,12 @@ export type Tag = 'work' | 'finance' | 'love' | 'family' | 'health' | 'personal'
 
 export interface EntryDTO {
   text: string;
-  tag: Tag;
+  tag?: Tag;
 }
 
 export interface DayDTO {
-  date: Date;
+  id: string;
+  date: string;
   title?: string;
   entries: EntryDTO[];
 }
