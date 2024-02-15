@@ -10,11 +10,11 @@ import { AppState } from 'src/data/redux/store';
 import { selectDay, setCurrentMonth } from 'src/data/redux/reducers/journal.reducer';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'src/components/ui/card';
+import { ScrollArea } from 'src/components/ui/scroll-area';
+import EntryInput from '../day-form/entry-input/entry-input.component';
 
 import style from './day-grid-overview.module.scss';
 import StyleUtils from 'src/utils/style.utils';
-import { getTagDetails } from '../day-form/day-form.utils';
-import EntryInput from '../day-form/entry-input/entry-input.component';
 const s = StyleUtils.styleMixer(style);
 
 export default function DayGridOverview() {
@@ -35,8 +35,7 @@ export default function DayGridOverview() {
     <div className={s('container')}>
       <Card className={s('card')}>
         <CardHeader>
-          <CardTitle>Today</CardTitle>
-          <CardDescription>Write your journal here...</CardDescription>
+          <CardTitle>Your journal</CardTitle>
         </CardHeader>
 
         <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
@@ -51,23 +50,24 @@ export default function DayGridOverview() {
                     key={i}
                     className={s('cell', { empty: !day.data, selected: isSameDay(date, new Date(selectedDay?.date)), today: isSameDay(date, new Date()) })}
                   >
-                    <div className={s('day-card')}>
+                    <>
                       <div className={s('day-date')}>{date.getDate()}</div>
-                      {/* Existing day */}
-                      {day.data &&
-                        day.data?.entries.map((entry, ii) => {
-                          const { Icon: SelectedTagIcon, color: tagColor, displayName } = getTagDetails(entry.tag);
-
-                          return (
-                            <div key={ii} className={s('entry')}>
-                              {/* <p className={'tag'}>{entry.tag}:</p> {entry.text} */}
-                              <EntryInput entry={entry} displayOptions={{ displayOnly: true }} />
-                            </div>
-                          );
-                        })}
-                      {/* Empty day */}
-                      {!day.data && <></>}
-                    </div>
+                      <ScrollArea className="">
+                        <div className={s('day-card')}>
+                          {/* Existing day */}
+                          {day.data &&
+                            day.data?.entries.map((entry, ii) => (
+                              <div key={ii} className={s('entry')}>
+                                {/* <p className={'tag'}>{entry.tag}:</p> {entry.text} */}
+                                <EntryInput entry={entry} displayOptions={{ displayOnly: true }} />
+                              </div>
+                            ))}
+                          {/* Empty day */}
+                          {!day.data && <></>}
+                        </div>
+                      </ScrollArea>
+                      <div className={s('border')} />
+                    </>
                   </div>
                 );
               })}

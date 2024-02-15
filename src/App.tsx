@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 
-import { dispatch } from './data/redux/store';
+import { AppState, dispatch } from './data/redux/store';
 import { logout } from './data/redux/reducers/user.reducer';
 
 import JournalPage from './pages/journal/journal.page';
@@ -23,15 +23,17 @@ const ProtectedRoute = ({ children }: any) => {
 
 function App() {
   const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
+  const userData = useSelector((state: AppState) => state.user.userData);
 
   return (
     <div className={s('container')}>
       <BrowserRouter>
         {isLoggedIn && (
           <nav className={s('nav')}>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-            <Link to="/contact">Contact</Link>
+            {/* <Link to="/">Journal</Link> */}
+            {/* <Link to="/about">About</Link> */}
+            {/* <Link to="/contact">Contact</Link> */}
+            <div className={s('user-title')}>{'Hi ' + userData.name ?? ''}</div>
             <Button onClick={() => dispatch(logout())}>
               <Link to="/">Logout</Link>
             </Button>

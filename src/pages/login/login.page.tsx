@@ -5,18 +5,20 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { login } from 'src/data/redux/reducers/user.reducer';
+import { AppState } from 'src/data/redux/store';
+import { login, resetIsLogging } from 'src/data/redux/reducers/user.reducer';
 import { UsersService } from 'src/data/api-client/services/UsersService';
 
 import { Button } from 'src/components/ui/button';
 import { Input } from 'src/components/ui/input';
-import { Card, CardContent, CardFooter, CardHeader } from 'src/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from 'src/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 'src/components/ui/card';
+import { Tabs, TabsContent, TabsList } from 'src/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'src/components/ui/form';
+import LoadingIcon from 'src/components/loading-icon/loading-icon.component';
 
 import StyleUtils from 'src/utils/style.utils';
 import style from './login.module.scss';
-const _s = StyleUtils.styleMixer(style);
+const s = StyleUtils.styleMixer(style);
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -36,7 +38,8 @@ const formSchemaSignup = z.object({
 export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
+  const isLoggedIn = useSelector((state: AppState) => state.user.isLoggedIn);
+  const isLogging = useSelector((state: AppState) => state.user.isLogging);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -60,8 +63,10 @@ export default function LoginPage() {
   });
 
   async function onSubmitLogin(values: z.infer<typeof formSchema>) {
+    dispatch(resetIsLogging(true));
     const res = await UsersService.postApiV1UserLogin({ ...values, name: 'new Pedro' });
-    dispatch(login());
+    dispatch(resetIsLogging(false));
+    dispatch(login(res.data));
     localStorage.setItem('token', res.token);
   }
 
@@ -71,107 +76,117 @@ export default function LoginPage() {
   }
 
   return (
-    <div className={'flex justify-center items-center h-screen'}>
-      <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2">
-          {/* <TabsTrigger value="account">Login</TabsTrigger> */}
-          {/* <TabsTrigger value="password">Signup</TabsTrigger> */}
-        </TabsList>
-        <TabsContent value="account">
-          <Card>
-            <CardHeader></CardHeader>
-            <Form {...formLogin}>
-              <form onSubmit={formLogin.handleSubmit(onSubmitLogin)} className="space-y-8">
-                <CardContent className="space-y-1">
-                  <FormField
-                    control={formLogin.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input placeholder="" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={formLogin.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-                <CardFooter>
-                  <Button type="submit">Login</Button>
-                </CardFooter>
-              </form>
-            </Form>
-          </Card>
-        </TabsContent>
-        <TabsContent value="password">
-          <Card>
-            <CardHeader></CardHeader>
+    <div className={s('container')}>
+      <Card className={s('card')}>
+        <CardHeader>
+          <CardTitle>Active Sloth</CardTitle>
+          <CardDescription>Seize your day. One step at a time.</CardDescription>
+        </CardHeader>
+        <CardContent className={s('content')}>
+          <Tabs defaultValue="account" className="w-[400px]">
+            {/* <TabsList className="grid w-full grid-cols-2"> */}
+            {/* <TabsTrigger value="account">Login</TabsTrigger> */}
+            {/* <TabsTrigger value="password">Signup</TabsTrigger> */}
+            {/* </TabsList> */}
+            <TabsContent value="account">
+              <Card>
+                <CardHeader></CardHeader>
+                <Form {...formLogin}>
+                  <form onSubmit={formLogin.handleSubmit(onSubmitLogin)} className="space-y-8">
+                    <CardContent className="space-y-1">
+                      <FormField
+                        control={formLogin.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={formLogin.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardContent>
+                    <CardFooter>
+                      <Button className={s('login-btn', { 'is-logging': isLogging })} type="submit">
+                        {isLogging ? <LoadingIcon /> : <span>Login</span>}
+                      </Button>
+                    </CardFooter>
+                  </form>
+                </Form>
+              </Card>
+            </TabsContent>
+            <TabsContent value="password">
+              <Card>
+                <CardHeader></CardHeader>
 
-            <Form {...formSignup}>
-              <form onSubmit={formSignup.handleSubmit(onSubmitSignup)} className="space-y-8">
-                <CardContent className="space-y-1">
-                  <FormField
-                    control={formSignup.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input placeholder="" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={formSignup.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={formSignup.control}
-                    name="passwordConfirm"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-                <CardFooter>
-                  <Button type="submit">Signup</Button>
-                </CardFooter>
-              </form>
-            </Form>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                <Form {...formSignup}>
+                  <form onSubmit={formSignup.handleSubmit(onSubmitSignup)} className="space-y-8">
+                    <CardContent className="space-y-1">
+                      <FormField
+                        control={formSignup.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={formSignup.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={formSignup.control}
+                        name="passwordConfirm"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Confirm Password</FormLabel>
+                            <FormControl>
+                              <Input type="password" placeholder="" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </CardContent>
+                    <CardFooter>
+                      <Button type="submit">Signup</Button>
+                    </CardFooter>
+                  </form>
+                </Form>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }

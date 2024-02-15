@@ -20,8 +20,14 @@
 
     cursor: pointer;
 
-    &:hover {
+    &:not(.read-only):hover {
       background-color: rgb(231, 231, 231) !important;
+    }
+
+    // When entry is only readable
+    &.read-only {
+      border-color: rgba(0, 0, 0, 0.05);
+      cursor: auto;
     }
   }
 

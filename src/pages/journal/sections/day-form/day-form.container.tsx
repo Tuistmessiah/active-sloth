@@ -6,13 +6,17 @@ import { Day, Entry } from 'src/data/interfaces/models.interface';
 import { DaysApi } from 'src/data/api/days.api';
 import { AppState, dispatch } from 'src/data/redux/store';
 import { selectDay, setDay } from 'src/data/redux/reducers/journal.reducer';
+import { setLoading } from 'src/data/redux/reducers/session.reducer';
 import { formatDate, relativeTimeDifference } from 'src/utils/misc.utils';
 
+import { useStateRef } from 'src/hooks/use-state-ref.hook';
 import { useDebounce } from 'src/hooks/use-debounce.hook';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../../components/ui/card';
-import EntryInput from './entry-input/entry-input.component';
 import { Input } from 'src/components/ui/input';
+import EntryInput from './entry-input/entry-input.component';
+import LoadingIcon from 'src/components/loading-icon/loading-icon.component';
+import { Tooltip, TooltipContent, TooltipTrigger } from 'src/components/ui/tooltip';
 
 import { ReactComponent as CircleCheck } from 'src/assets/svgs/circle-check-svgrepo.svg';
 import { ReactComponent as Circle } from 'src/assets/svgs/circle-svgrepo.svg';
@@ -20,6 +24,8 @@ import { ReactComponent as Circle } from 'src/assets/svgs/circle-svgrepo.svg';
 import style from './day-form.module.scss';
 import StyleUtils from 'src/utils/style.utils';
 const s = StyleUtils.styleMixer(style);
+
+const AUTO_SAVE_DELAY_MS = 4000;
 
 const emptyDay: Day = {
   id: '',
@@ -29,32 +35,18 @@ const emptyDay: Day = {
 };
 
 export default function DayForm() {
-  const timeOut2Sec = useDebounce(2000, 'run-last');
+  const autoSaveTimeout = useDebounce(AUTO_SAVE_DELAY_MS, 'run-last');
 
-  const currentMonth = useSelector((state: AppState) => state.journal.currentMonth);
   const selectedDay = useSelector((state: AppState) => state.journal.selectedDay);
+  const loadingSaveDay = useSelector((state: AppState) => state.session.loaders['save-day'] === 'loading');
 
   const [dayForm, setDayForm] = useState<Day>(emptyDay);
-  const [saved, setSaved] = useState(true);
+  const [[, saved], setSaved] = useStateRef(true);
 
   const lastEdit = useRef<number>(0);
 
-  useEffect(() => {
-    console.log({ selectedDay });
-    const formDate = selectedDay.date ?? emptyDay.date;
-    const formData = selectedDay.data ?? emptyDay;
-
-    setDayForm({ ...formData, date: formDate });
-  }, [selectedDay]);
-
-  useEffect(() => {
-    // Add empty entry at the end
-    if (dayForm.entries[dayForm.entries.length - 1].text) {
-      let newEntries = [...dayForm.entries];
-      newEntries.push({ text: '', tag: undefined });
-      setDayForm((prevDayForm) => ({ ...prevDayForm, entries: newEntries }));
-    }
-  }, [dayForm]);
+  useEffect(() => selectForm(), [selectedDay]);
+  useEffect(() => addEmptyEntry(), [dayForm]);
 
   return (
     <div className={s('container')}>
@@ -62,7 +54,16 @@ export default function DayForm() {
         <CardHeader>
           <CardTitle>{formatDate(selectedDay.date)}</CardTitle>
           <CardDescription>{relativeTimeDifference(selectedDay.date, new Date().toISOString())}</CardDescription>
-          <div className={s('save-icon', { fill: !saved })}>{saved ? <CircleCheck /> : <Circle />}</div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className={s('save-icon', { fill: !saved() })}>
+                {loadingSaveDay ? <LoadingIcon /> : saved() ? <CircleCheck /> : <Circle className={s('save-btn')} onClick={() => saveChanges()} />}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{loadingSaveDay ? 'loading...' : saved() ? 'saved' : 'unsaved'}</p>
+            </TooltipContent>
+          </Tooltip>
         </CardHeader>
         <CardContent>
           <form>
@@ -89,41 +90,50 @@ export default function DayForm() {
           </form>
         </CardContent>
       </Card>
-      <button className={s('submit')} onClick={() => saveChanges()}>
-        Save
-      </button>
     </div>
   );
 
+  function selectForm() {
+    const formDate = selectedDay.date ?? emptyDay.date;
+    const formData = selectedDay.data ?? emptyDay;
+
+    setDayForm({ ...formData, date: formDate });
+  }
+
+  function addEmptyEntry() {
+    if (dayForm.entries[dayForm.entries.length - 1].text) {
+      let newEntries = [...dayForm.entries];
+      newEntries.push({ text: '', tag: undefined });
+      setDayForm((prevDayForm) => ({ ...prevDayForm, entries: newEntries }));
+    }
+  }
+
   function ifIdleSave() {
-    timeOut2Sec(() => {
+    autoSaveTimeout(() => {
       const timeSinceLastEdit = Date.now() - lastEdit.current;
-      if (timeSinceLastEdit >= 2000) saveChanges();
+      if (timeSinceLastEdit >= AUTO_SAVE_DELAY_MS) saveChanges();
     });
   }
 
   async function saveChanges() {
-    const isUpdate = !!selectedDay.data;
-    console.log('auto save');
+    if (saved()) return;
 
+    const isUpdate = !!selectedDay.data;
     const trimmedForm = { ...dayForm, entries: dayForm.entries.filter((entry) => entry.text !== '') };
-    console.log({
-      dayForm,
-      trimmedForm,
-    });
+    dispatch(setLoading({ loadingType: 'save-day', loadingState: 'loading' }));
 
     if (isUpdate) {
       const res = await DaysApi.patchDay(trimmedForm.id, trimmedForm);
       const updatedDay = { ...res.data };
       dispatch(setDay({ id: res.data.id, day: updatedDay }));
     } else {
-      console.log({ trimmedForm });
       const res = await DaysApi.postDay(trimmedForm);
       const newDay = { ...res.data };
       dispatch(setDay({ id: res.data.id, day: newDay }));
       dispatch(selectDay({ date: selectedDay.date, data: newDay }));
     }
 
+    dispatch(setLoading({ loadingType: 'save-day', loadingState: 'idle' }));
     setSaved(true);
   }
 
@@ -131,6 +141,6 @@ export default function DayForm() {
     let newEntries = [...dayForm.entries];
     newEntries[index] = entry;
     setDayForm((prevDayForm) => ({ ...prevDayForm, entries: newEntries }));
-    if (saved) setSaved(false);
+    if (saved()) setSaved(false);
   }
 }

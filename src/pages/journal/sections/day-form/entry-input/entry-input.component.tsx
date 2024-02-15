@@ -46,7 +46,7 @@ export default function EntryInput(props: EntryInputProps) {
     <div className={s('container')} style={{ backgroundColor: tagColor }}>
       <Popover>
         <PopoverTrigger asChild>
-          <div className={s('tag-menu')} style={{ backgroundColor: tagColor }}>
+          <div className={s('tag-menu', { 'read-only': !!displayOnly })} style={{ backgroundColor: tagColor }}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>{SelectedTagIcon}</div>

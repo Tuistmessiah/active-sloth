@@ -1,0 +1,7 @@
+@import 'src/styles/imports.scss';
+
+.container {
+  height: 2rem;
+  width: 20px;
+  animation: rotate-clockwise 2s linear infinite;
+}

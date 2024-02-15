@@ -11,7 +11,7 @@
     display: flex;
     flex-direction: column;
 
-    padding: 4rem 0.8rem;
+    padding: 0rem 0.8rem;
 
     .overview-wrapper {
       overflow: auto;
@@ -21,31 +21,15 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
       grid-auto-rows: minmax(3rem, auto);
-      // grid-auto-flow: dense;
       gap: 6px;
       padding: 10px;
-    }
-
-    // TODO: assuming hardcoded number of cols
-    .overview-main > :nth-child(3n) {
-      border-right: none;
     }
   }
 }
 
 .cell {
-}
-
-.day-card {
-  overflow: hidden;
-  padding: 1rem;
-  padding-bottom: calc(1rem + 6px);
-
   position: relative;
-  display: flex;
-  flex-direction: column;
 
-  max-height: 20rem;
   cursor: pointer;
 
   // Dashed line
@@ -54,24 +38,12 @@
     content: '';
     position: absolute;
     z-index: 1;
-    // TODO: turn it into dashed line
     // border: 2px dashed #ccc; // Example of a dashed border
-    // padding: 10px;
-    // display: flex;
-    // flex-direction: column;
-  }
-
-  &.today {
-    background-color: #0050b848;
-  }
-
-  &.selected {
-    border: 1px solid rgba(125, 128, 0, 0.5);
   }
 
   /* Horizontal line */
   &::before {
-    bottom: 0;
+    bottom: 0px;
     left: 10px;
     right: 10px;
     height: 2px;
@@ -93,14 +65,60 @@
     background-repeat: repeat-y;
   }
 
-  .day-date {
-    margin-bottom: 1rem;
+  &:nth-of-type(4n)::after {
+    content: none;
   }
 
   &.empty {
     height: 3.5rem;
     color: grey;
   }
+
+  &.today {
+    background-color: #0050b848;
+  }
+
+  &.selected {
+    .border {
+      display: block;
+    }
+  }
+
+  // Shade on selected day
+  .border {
+    display: none;
+    content: '';
+
+    position: absolute;
+    z-index: 1;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    right: 3px;
+
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+
+    pointer-events: none;
+
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+}
+
+.day-date {
+  margin: 0.5rem;
+}
+
+.day-card {
+  margin: 1rem;
+  margin-bottom: calc(1rem + 6px);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  max-height: 20rem;
+  cursor: pointer;
 
   .entry {
     margin-bottom: 0.5rem;

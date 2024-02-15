@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { TriggerPayload } from 'src/data/interfaces/redux.interface';
+import { Loaders, LoadingState, TriggerPayload } from 'src/data/interfaces/redux.interface';
 
 import { initSession } from '../initial-state';
 
@@ -15,8 +15,12 @@ const sessionSlice = createSlice({
     clearTrigger: (state, action: PayloadAction<TriggerPayload['name']>) => {
       delete state.triggers[action.payload];
     },
+    setLoading: (state, action: PayloadAction<{ loadingType: Loaders; loadingState: LoadingState }>) => {
+      const { loadingType, loadingState } = action.payload;
+      state.loaders[loadingType] = loadingState;
+    },
   },
 });
 
-export const { setTrigger, clearTrigger } = sessionSlice.actions;
+export const { setTrigger, clearTrigger, setLoading } = sessionSlice.actions;
 export default sessionSlice.reducer;

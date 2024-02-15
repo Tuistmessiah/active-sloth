@@ -5,7 +5,7 @@ import { Dispatch, MutableRefObject, SetStateAction, useRef, useState } from 're
  * @obs can be used inside callbacks that lose reference (like event listeners)
  * @usage Use 'getState' inside event listeners to get current value of state ref
  * @param initialState initial state
- * @returns Offers both the normal "state" and a "getState", along with the "setState"
+ * @returns [[state, getState], setState], where "getState" gives the ref value
  */
 export function useStateRef<T>(initialState: T): [[T, () => T], Dispatch<SetStateAction<T>>] {
   const [state, setState] = useState<T>(initialState);

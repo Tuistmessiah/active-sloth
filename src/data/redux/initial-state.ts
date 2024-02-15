@@ -9,6 +9,13 @@ export const initJournal: IJournalState = {
 
 export const initSession: ISessionState = {
   triggers: {},
+  loaders: {},
 };
 
-export const initialUserState: IUserState = {};
+export const initialUserState: IUserState = {
+  userData: null,
+  isLoggedIn: false,
+  isLogging: false,
+  status: 'idle',
+  error: null,
+};

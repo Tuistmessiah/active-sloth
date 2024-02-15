@@ -10,7 +10,7 @@ export interface THENAMEProps {
 
 }
 
-export default function THENAME() {
+export default function THENAME(props: THENAMEProps) {
   const dispatch = useDispatch();
 
   const myStoreState = useSelector((state: any) => state);
