@@ -38,3 +38,13 @@
     left: 2rem;
   }
 }
+
+.skeleton {
+  height: 100%;
+  padding: 1rem;
+
+  display: flex;
+  gap: 3rem;
+  flex-direction: column;
+  justify-content: flex-start;
+}

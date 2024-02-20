@@ -7,10 +7,21 @@ const journalSlice = createSlice({
   name: 'journal',
   initialState: initJournal,
   reducers: {
+    /**
+     * Sets selectedDay if undefined
+     * @returns
+     */
     setCurrentMonth: (state, action: PayloadAction<Day[]>) => {
       state.currentMonth = action.payload;
+      if (!state.selectedDay.date) {
+        const date = new Date().toISOString();
+        const day = (state.currentMonth || []).find((day) => day.date === date);
+        state.selectedDay = { date, data: day };
+      }
     },
     setDay: (state, action: PayloadAction<{ day: Day; id: string }>) => {
+      if (!state.currentMonth) return;
+
       const dayIndex = state.currentMonth.findIndex((day) => day.id === action.payload.id);
       if (dayIndex !== -1) {
         state.currentMonth[dayIndex] = action.payload.day;
@@ -20,31 +31,18 @@ const journalSlice = createSlice({
       }
     },
     /**
-     * Select a day: to edit in the form
-     * @param date iso string. If undefined, edit today day.
-     * @param date if set, just overwrite in redux
+     * Select a day. If "date" undefined, "data" too.
+     * @param date iso string.
+     * @param date search for day in "currentMonth"
      */
-    selectDay: (state, action: PayloadAction<{ date?: string; data?: Day }>) => {
-      const { date, data } = action.payload;
-      // Overwrite
-      if (data && date) {
-        state.selectedDay = { date, data };
-        return;
+    selectDay: (state, action: PayloadAction<{ date?: string }>) => {
+      const { date } = action.payload;
+
+      if (!date) state.selectedDay = { date: undefined, data: undefined };
+      else {
+        const day = (state.currentMonth || []).find((day) => day.date === date);
+        state.selectedDay = { date, data: day };
       }
-      // If no date, get "today"
-      if (!date) {
-        const day = state.currentMonth[0];
-        state.selectedDay = { date: day.date, data: day };
-        return;
-      }
-      // TODO: Change to find day by id
-      const day = state.currentMonth.find((day) => day.date === date);
-      if (!day) {
-        state.selectedDay = { date: date, data: undefined };
-        return;
-      }
-      // Find day by date and set
-      state.selectedDay = { date: day.date, data: day };
     },
   },
 });

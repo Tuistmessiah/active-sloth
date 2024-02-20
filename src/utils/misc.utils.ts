@@ -20,6 +20,11 @@ export abstract class MiscUtils {
   static env(name: string) {
     return process.env[name];
   }
+
+  static run<T>(variable: T | (() => T)): T {
+    if (typeof variable === 'function') return (variable as () => T)();
+    else return variable;
+  }
 }
 
 // Function to format date as "9 Feb 2024 - Fri"

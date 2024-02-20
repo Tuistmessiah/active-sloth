@@ -1,10 +1,10 @@
 import { Day } from './models.interface';
 
 export interface IJournalState {
-  currentMonth: Day[];
+  currentMonth: Day[] | undefined;
   status: 'idle';
   selectedDay: {
-    date: string;
+    date?: string;
     data?: Day;
   };
 }

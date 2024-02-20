@@ -93,7 +93,7 @@ export default function EntryInput(props: EntryInputProps) {
           lineHeight: `${LINE_HEIGHT_PX}px`,
           backgroundColor: tagColor,
           resize: 'none',
-          height: '36px',
+          height: displayOnly ? '36px' : '36px',
         }}
         readOnly={displayOnly}
       />

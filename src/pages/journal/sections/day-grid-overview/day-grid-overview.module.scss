@@ -27,107 +27,12 @@
   }
 }
 
-.cell {
-  position: relative;
+.skeleton {
+  height: 100%;
+  padding: 3rem;
 
-  cursor: pointer;
-
-  // Dashed line
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    z-index: 1;
-    // border: 2px dashed #ccc; // Example of a dashed border
-  }
-
-  /* Horizontal line */
-  &::before {
-    bottom: 0px;
-    left: 10px;
-    right: 10px;
-    height: 2px;
-    background-image: linear-gradient(to right, #999 33%, rgba(255, 255, 255, 0) 0%);
-    background-position: top;
-    background-size: 6px 2px;
-    background-repeat: repeat-x;
-  }
-
-  /* Vertical line */
-  &::after {
-    top: 10px;
-    bottom: 10px;
-    right: 0;
-    width: 2px;
-    background-image: linear-gradient(to bottom, #999 33%, rgba(255, 255, 255, 0) 0%);
-    background-position: left;
-    background-size: 2px 6px;
-    background-repeat: repeat-y;
-  }
-
-  &:nth-of-type(4n)::after {
-    content: none;
-  }
-
-  &.empty {
-    height: 3.5rem;
-    color: grey;
-  }
-
-  &.today {
-    background-color: #0050b848;
-  }
-
-  &.selected {
-    .border {
-      display: block;
-    }
-  }
-
-  // Shade on selected day
-  .border {
-    display: none;
-    content: '';
-
-    position: absolute;
-    z-index: 1;
-    top: 3px;
-    bottom: 3px;
-    left: 3px;
-    right: 3px;
-
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 3px;
-
-    pointer-events: none;
-
-    background-color: rgba(0, 0, 0, 0.02);
-  }
-}
-
-.day-date {
-  margin: 0.5rem;
-}
-
-.day-card {
-  margin: 1rem;
-  margin-bottom: calc(1rem + 6px);
-
-  position: relative;
   display: flex;
+  gap: 3rem;
   flex-direction: column;
-
-  max-height: 20rem;
-  cursor: pointer;
-
-  .entry {
-    margin-bottom: 0.5rem;
-
-    .tag {
-      font-weight: bold;
-    }
-
-    span {
-    }
-  }
+  justify-content: flex-start;
 }

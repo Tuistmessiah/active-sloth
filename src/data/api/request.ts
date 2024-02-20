@@ -20,7 +20,13 @@ type RequestOptions = {
 };
 
 // TODO: Do not authenticated catch to change to login page
-export async function request<T>(url: string, options: RequestOptions): Promise<T> {
+/**
+ *
+ * @param url
+ * @param options
+ * @returns value when success. null when error.
+ */
+export async function request<T>(url: string, options: RequestOptions): Promise<T | null> {
   try {
     const headers: HeadersInit = { 'Content-Type': 'application/json', ...options.headers };
 
@@ -46,7 +52,7 @@ export async function request<T>(url: string, options: RequestOptions): Promise<
   } catch (error) {
     if (!options.suppressToast) {
       displayErrorToast(options.errorMessage || 'Something went wrong. Please try again.');
-      return Promise.reject(error);
+      return null;
     }
     throw error;
   }
