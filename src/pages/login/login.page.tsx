@@ -7,12 +7,12 @@ import { z } from 'zod';
 
 import { AppState } from 'src/data/redux/store';
 import { login, resetIsLogging } from 'src/data/redux/reducers/user.reducer';
-import { UsersService } from 'src/data/api-client/services/UsersService';
+import { UsersApi } from 'src/data/api/users.api';
 
 import { Button } from 'src/components/ui/button';
 import { Input } from 'src/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from 'src/components/ui/card';
-import { Tabs, TabsContent, TabsList } from 'src/components/ui/tabs';
+import { Tabs, TabsContent } from 'src/components/ui/tabs';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from 'src/components/ui/form';
 import LoadingIcon from 'src/components/loading-icon/loading-icon.component';
 
@@ -64,15 +64,15 @@ export default function LoginPage() {
 
   async function onSubmitLogin(values: z.infer<typeof formSchema>) {
     dispatch(resetIsLogging(true));
-    const res = await UsersService.postApiV1UserLogin({ ...values, name: 'new Pedro' });
+    const res = await UsersApi.userLogin({ ...values, name: 'new Pedro' });
     dispatch(resetIsLogging(false));
     dispatch(login(res.data));
-    localStorage.setItem('token', res.token);
   }
 
+  // TODO: To develop
   async function onSubmitSignup(values: z.infer<typeof formSchema>) {
-    const res = await UsersService.postApiV1UserSignup({ ...values, name: 'new Pedro' });
-    localStorage.setItem('token', res.token);
+    // const res = await UsersService.postApiV1UserSignup({ ...values, name: 'new Pedro' });
+    // localStorage.setItem('token', res.token);
   }
 
   return (

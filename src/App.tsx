@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 
+import { UsersApi } from './data/api/users.api';
 import { AppState, dispatch } from './data/redux/store';
-import { logout } from './data/redux/reducers/user.reducer';
+import { login, logout } from './data/redux/reducers/user.reducer';
 
 import JournalPage from './pages/journal/journal.page';
 import LoginPage from './pages/login/login.page';
@@ -24,6 +26,12 @@ const ProtectedRoute = ({ children }: any) => {
 function App() {
   const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
   const userData = useSelector((state: AppState) => state.user.userData);
+
+  useEffect(() => {
+    UsersApi.checkSession().then((res) => {
+      dispatch(login({ user: res.data.user }));
+    });
+  }, []);
 
   return (
     <div className={s('container')}>

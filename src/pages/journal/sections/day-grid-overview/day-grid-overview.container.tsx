@@ -9,6 +9,7 @@ import { AppState } from 'src/data/redux/store';
 import { setCurrentMonth } from 'src/data/redux/reducers/journal.reducer';
 
 import { Card, CardContent, CardHeader, CardTitle } from 'src/components/ui/card';
+import { ScrollArea } from 'src/components/ui/scroll-area';
 import { Skeleton } from 'src/components/ui/skeleton';
 import DayCell from './day-cell/day-cell.component';
 
@@ -37,19 +38,21 @@ export default function DayGridOverview() {
         </CardHeader>
 
         {currentMonth ? (
-          <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
-            <CardContent className={s('overview-wrapper')}>
-              <Masonry>
-                {filledDays.map((day, i) => (
-                  <DayCell day={day} key={i} />
-                ))}
-              </Masonry>
-            </CardContent>
-          </ResponsiveMasonry>
+          <ScrollArea>
+            <ResponsiveMasonry columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}>
+              <CardContent className={s('overview-wrapper')}>
+                <Masonry columnsCount={2}>
+                  {filledDays.map((day) => (
+                    <DayCell key={day.date} day={day} />
+                  ))}
+                </Masonry>
+              </CardContent>
+            </ResponsiveMasonry>
+          </ScrollArea>
         ) : (
           <div className={s('skeleton')}>
-            {[1, 2, 3, 4, 5].map(() => (
-              <div className="flex items-center space-x-4">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center space-x-4">
                 <Skeleton className="h-[4rem] w-[4rem] rounded-full" />
                 <div className="space-y-2">
                   <Skeleton className="h-6 w-[250px]" />

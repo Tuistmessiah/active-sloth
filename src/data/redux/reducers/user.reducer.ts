@@ -8,7 +8,6 @@ const userSlice = createSlice({
     logout(state) {
       state.userData = null;
       state.isLoggedIn = false;
-      // TODO: Use session loading
     },
     login(state, action: PayloadAction<any>) {
       state.userData = action.payload.user;

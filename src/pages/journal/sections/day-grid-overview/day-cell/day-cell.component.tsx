@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { isSameDay } from 'date-fns';
 
+import { MiscUtils } from 'src/utils/misc.utils';
 import { AppState } from 'src/data/redux/store';
 import { selectDay } from 'src/data/redux/reducers/journal.reducer';
 
@@ -15,8 +16,9 @@ import { ReactComponent as ExpandLessCircle } from 'src/assets/svgs/expand-less-
 
 import style from './day-cell.module.scss';
 import StyleUtils from 'src/utils/style.utils';
-import { MiscUtils } from 'src/utils/misc.utils';
 const s = StyleUtils.styleMixer(style);
+
+const CELL_HEIGHT_PX = 200;
 
 export interface DayCellProps {
   day: DisplayDay;
@@ -64,8 +66,7 @@ export default function DayCell(props: DayCellProps) {
   useEffect(() => {
     if (cellRef.current) {
       const currentHeight = cellRef.current.clientHeight;
-      setShowExpandBtn(currentHeight > 100);
-      if (date.toISOString() === '2024-02-14T00:00:00.000Z') console.log('passou', date.toISOString());
+      setShowExpandBtn(currentHeight > CELL_HEIGHT_PX);
     }
   });
 
@@ -82,7 +83,7 @@ export default function DayCell(props: DayCellProps) {
           {showExpandBtn && <ClickIcon tooltip={'expand'} isToggled={isExpanded} toggle={(value) => setIsExpanded(value)} icons={[<ExpandLessCircle />, <ExpandMore />]} />}
         </div>
         <ScrollArea ref={cellRef}>
-          <div className={s('day-card', { 'is-expanded': isExpanded })}>
+          <div className={s('day-card', { 'is-expanded': isExpanded })} style={{ maxHeight: `${CELL_HEIGHT_PX}px` }}>
             {/* Existing day */}
             {day.data &&
               day.data?.entries.map((entry, ii) => (

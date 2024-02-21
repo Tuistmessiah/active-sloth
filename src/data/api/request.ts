@@ -12,14 +12,14 @@ import { setTrigger } from '../redux/reducers/session.reducer';
 type RequestOptions = {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   body?: any;
-  token?: string;
+  noCredentials?: boolean;
   headers?: Record<string, string>;
   params?: string | Record<string, string> | URLSearchParams | string[][] | undefined;
   errorMessage?: string;
   suppressToast?: boolean;
 };
 
-// TODO: Do not authenticated catch to change to login page
+// TODO: Make a catch when request returns non-authenticated to redirect to login page
 /**
  *
  * @param url
@@ -29,10 +29,6 @@ type RequestOptions = {
 export async function request<T>(url: string, options: RequestOptions): Promise<T | null> {
   try {
     const headers: HeadersInit = { 'Content-Type': 'application/json', ...options.headers };
-
-    // TODO: Move token away from local storage
-    if (options.token) headers['Authorization'] = `Bearer ${options.token}`;
-    else headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
     let queryParams = '';
     if (options.params) {
@@ -44,6 +40,7 @@ export async function request<T>(url: string, options: RequestOptions): Promise<
       method: options.method,
       headers,
       body: options.body ? JSON.stringify(options.body) : null,
+      credentials: options.noCredentials ? 'omit' : 'include',
     });
 
     if (!response.ok) throw new Error(`Error: ${response.status}`);
