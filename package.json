@@ -51,6 +51,7 @@
     "zod": "^3.22.4"
   },
   "scripts": {
+    "dev": "react-scripts start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "p2o": "p2o ./dev/api.postman.json -f ./dev/api.open-api.yml",

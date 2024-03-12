@@ -26,9 +26,10 @@ const ProtectedRoute = ({ children }: any) => {
 function App() {
   const isLoggedIn = useSelector((state: any) => state.user.isLoggedIn);
   const userData = useSelector((state: AppState) => state.user.userData);
-
+  console.log({ userData });
   useEffect(() => {
     UsersApi.checkSession().then((res) => {
+      if (!res) return;
       dispatch(login({ user: res.data.user }));
     });
   }, []);
@@ -41,7 +42,7 @@ function App() {
             {/* <Link to="/">Journal</Link> */}
             {/* <Link to="/about">About</Link> */}
             {/* <Link to="/contact">Contact</Link> */}
-            <div className={s('user-title')}>{'Hi ' + userData.name ?? ''}</div>
+            <div className={s('user-title')}>{'Hi ' + userData?.name ?? ''}</div>
             <Button onClick={() => dispatch(logout())}>
               <Link to="/">Logout</Link>
             </Button>
